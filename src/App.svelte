@@ -6,7 +6,7 @@
 	<h1>Hello {name}!</h1>
 	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
 </main>
-<footer>&copy 2021 All right reserved.</footer>
+<footer align="center">&copy 2021 All right reserved.</footer>
 
 <style>
 	main {
