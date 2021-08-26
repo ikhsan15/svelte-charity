@@ -5,20 +5,30 @@
 	import Welcome from "../components/Welcome.svelte";
 	import Promo from "../components/Promo.svelte";
 	import Footer from "../components/Footer.svelte";
+	import Loader from "../components/Loader.svelte";
 
 	let title = "Charity";
-
 	// membaca data dari third party API
-	let charities = [];
+	let data = getData();
 
-	onMount(async function () {
+	async function getData() {
 		const res = await fetch("http://charity-api-bwa.herokuapp.com/charities");
-		charities = await res.json();
-	});
+		const data = await res.json();
+
+		if (res.ok) {
+			return data;
+		} else {
+			throw new Error(data);
+		}
+	}
 </script>
 
 <Header />
 <Welcome />
-<CharityList {charities} />
+{#await data}
+	<Loader />
+{:then charities}
+	<CharityList {charities} />
+{/await}
 <Promo />
 <Footer />
