@@ -4,13 +4,24 @@
 	import Footer from "../components/Footer.svelte";
 
 	export let params;
-	let charity;
+	let charity,
+		amount,
+		name,
+		email,
+		agree = false;
 
 	async function getCharity(id) {
 		const res = await fetch(
 			`http://charity-api-bwa.herokuapp.com/charities/${id}`
 		);
 		return res.json();
+	}
+
+	function handleButtonClick() {
+		console.log("Button Click");
+	}
+	function handleForm(event) {
+		console.log("Form Submitted");
 	}
 
 	onMount(async function () {
@@ -70,6 +81,7 @@
 							</div>
 							<!-- .xs-heading end -->
 							<form
+								on:submit|preventDefault={handleForm}
 								action="#"
 								method="post"
 								id="xs-donation-form"
@@ -86,7 +98,8 @@
 										name="amount"
 										id="xs-donate-amount"
 										class="form-control"
-										placeholder="Minimum of $5"
+										bind:value={amount}
+										placeholder="Your donation in Rupiah"
 									/>
 								</div>
 								<!-- .xs-input-group END -->
@@ -100,6 +113,7 @@
 										name="name"
 										id="xs-donate-name"
 										class="form-control"
+										bind:value={name}
 										placeholder="Your awesome name"
 									/>
 								</div>
@@ -113,6 +127,7 @@
 										name="email"
 										id="xs-donate-email"
 										class="form-control"
+										bind:value={email}
 										placeholder="email@awesome.com"
 									/>
 								</div>
@@ -124,7 +139,10 @@
 									</label>
 								</div>
 								<!-- .xs-input-group END -->
-								<button type="submit" class="btn btn-warning"
+								<button
+									type="submit"
+									on:click|once={handleButtonClick}
+									class="btn btn-warning"
 									><span class="badge"><i class="fa fa-heart" /></span> Donate now</button
 								>
 							</form>
