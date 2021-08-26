@@ -1,4 +1,5 @@
 <script>
+	import router from "page";
 	import { onMount } from "svelte";
 	import Header from "../components/Header.svelte";
 	import Footer from "../components/Footer.svelte";
@@ -20,8 +21,25 @@
 	function handleButtonClick() {
 		console.log("Button Click");
 	}
-	function handleForm(event) {
-		console.log("Form Submitted");
+	async function handleForm(event) {
+		charity.pledged = charity.pledged + parseInt(amount);
+		try {
+			const res = await fetch(
+				`http://charity-api-bwa.herokuapp.com/charities/${params.id}`,
+				{
+					method: "PUT",
+					headers: {
+						"content-type": "application/json",
+					},
+					body: JSON.stringify(charity),
+				}
+			);
+			console.log(res);
+			// redirection
+			router.redirect("/success");
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	onMount(async function () {
@@ -99,6 +117,7 @@
 										id="xs-donate-amount"
 										class="form-control"
 										bind:value={amount}
+										required="true"
 										placeholder="Your donation in Rupiah"
 									/>
 								</div>
@@ -114,6 +133,7 @@
 										id="xs-donate-name"
 										class="form-control"
 										bind:value={name}
+										required="true"
 										placeholder="Your awesome name"
 									/>
 								</div>
@@ -128,21 +148,24 @@
 										id="xs-donate-email"
 										class="form-control"
 										bind:value={email}
+										required="true"
 										placeholder="email@awesome.com"
 									/>
 								</div>
 								<div class="xs-input-group" id="xs-input-checkbox">
-									<input type="checkbox" name="agree" id="xs-donate-agree" />
+									<input
+										type="checkbox"
+										name="agree"
+										id="xs-donate-agree"
+										bind:checked={agree}
+									/>
 									<label for="xs-donate-agree">
 										I Agree
 										<span class="color-light-red">**</span>
 									</label>
 								</div>
 								<!-- .xs-input-group END -->
-								<button
-									type="submit"
-									on:click|once={handleButtonClick}
-									class="btn btn-warning"
+								<button type="submit" disabled={!agree} class="btn btn-warning"
 									><span class="badge"><i class="fa fa-heart" /></span> Donate now</button
 								>
 							</form>
